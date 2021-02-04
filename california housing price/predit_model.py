@@ -3,6 +3,7 @@ import numpy as np
 import plotly.graph_objs as go
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot
 from plotly.subplots import make_subplots
+from sklearn.preprocessing import LabelEncoder
 
 # columns of dataset
 # longitude
@@ -66,3 +67,23 @@ fig.add_trace(mean_count_bar, row=2, col=1)
 
 #the distribution look very similar, therefore we may use ffill to fill the nan
 df['total_bedrooms'] = df['total_bedrooms'].fillna(method='ffill')
+
+#then lets check the type of columns, we found that only ocean_proximity column is not in numeric form
+df['ocean_proximity'].unique() #there are 5 label
+#so we can transform the data using label encoder
+le = LabelEncoder()
+le.fit(df['ocean_proximity'].unique())
+df['ocean_proximity'] = le.transform(df['ocean_proximity'])
+
+#check correlation
+corr = df.corr()
+heatmap = go.Heatmap(
+    z = corr.values,
+    x = list(corr.index),
+    y = list(corr.index)
+)
+fig = go.Figure()
+fig.add_trace(heatmap)
+# plot(fig, filename='correlation heatmap.html')
+#we found household, population, total_bedroom, and total_room are highly related
+#median house value and median income are highly related as well
