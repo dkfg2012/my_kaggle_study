@@ -87,3 +87,7 @@ fig.add_trace(heatmap)
 # plot(fig, filename='correlation heatmap.html')
 #we found household, population, total_bedroom, and total_room are highly related
 #median house value and median income are highly related as well
+
+df["rooms_per_household"] = df["total_rooms"]/df["households"]
+df["bedrooms_per_room"] = df["total_bedrooms"]/df["total_rooms"]
+df["population_per_household"]=df["population"]/df["households"]
